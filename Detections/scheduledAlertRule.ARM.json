@@ -1,0 +1,59 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "variables": {
+        "ruleId": "017c0d3e-785f-4165-ac61-f0d47c99110a",
+        "ruleDisplayName": "MyScheduledAlertRule1"
+    },
+    "parameters": {
+        "location": {
+            "type": "string",
+            "minLength": 1,
+            "defaultValue": "[resourceGroup().location]",
+            "metadata": {
+                "description": "Resource group to deploy solution resources"
+            }
+        },
+        "logAnalyticsWorkspaceName": {
+            "defaultValue": "<Enter Log Analytics Workspace name>",
+            "type": "string",
+            "metadata": {
+                "description": "Workspace name for Log Analytics where Sentinel is setup"
+            }
+        }
+    },
+    "functions": [],
+    "resources": [
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+            "name": "[concat(parameters('logAnalyticsWorkspaceName'),'/Microsoft.SecurityInsights/',parameters('ruleId'))]",
+            "apiVersion": "2020-01-01",
+            "kind": "Scheduled",
+            "location": "[parameters('location')]",
+            "dependsOn": [],
+            "properties": {
+                "description": "MPO rule description",
+                "displayName": "MyScheduledAlertRule",
+                "enabled": false,
+                "query": "SecurityAlert | take 10",
+                "queryFrequency": "PT1H",
+                "queryPeriod": "P2DT1H30M",
+                "severity": "Medium",
+                "suppressionDuration": "PT1H",
+                "suppressionEnabled": true,
+                "tactics": [ "InitialAccess", "Persistence" ],
+                "triggerOperator": "GreaterThan",
+                "triggerThreshold": 0
+                // Optional fields:
+                //"alertRuleTemplateName": "Source template ID",  
+                //"Etag": "*" // needed when upgrading
+            }
+        }
+    ],
+    "outputs": {
+        "ruleId": {
+            "type": "string",
+            "value": "[parameters('ruleId')]"
+        }
+    }
+}

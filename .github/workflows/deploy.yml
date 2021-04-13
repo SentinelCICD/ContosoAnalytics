@@ -1,0 +1,25 @@
+name: Deploy a Content to Azure Sentinel
+on: 
+  push:
+    branches: [ master ]
+    paths:
+    - 'Detections/**'
+
+jobs:
+  deploy-content:
+    runs-on: ubuntu-latest
+    steps:
+                
+    # Authentication
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ {secret_name}  }}
+    
+    # Checkout
+    - name: Checkout
+      uses: actions/checkout@v1    
+    
+    # Call deployment action/script
+    - name: Sentinel Deployment
+      uses: azure/sentinel-deploy
