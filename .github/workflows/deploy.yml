@@ -2,8 +2,8 @@ name: Deploy a Content to Azure Sentinel
 on: 
   push:
     branches: [ master ]
-    paths:
-    - 'Detections/**'
+#    paths:
+#    - 'Detections/**'
 
 jobs:
   deploy-content:
