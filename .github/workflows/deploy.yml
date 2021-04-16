@@ -40,7 +40,9 @@ jobs:
       run: az cloud set --name Dogfood
 
     - name: "sign in as sp"
-      run: az login --service-principal -u ${{ secrets.SP_ID }} -p ${{ secrets.SP_SECRET }} -tenant ${{ secrets.TENANT_ID }}
+      with: # Set the secret as an input
+        ServicePrincipalId: ${{ secrets.SP_ID }}
+      run: az login --service-principal -u $ServicePrincipalId -p ${{ secrets.SP_SECRET }} -tenant ${{ secrets.TENANT_ID }}
 
     - name: "sign in as sp"
       run: az account show
