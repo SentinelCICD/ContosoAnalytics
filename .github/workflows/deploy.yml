@@ -15,6 +15,7 @@ jobs:
       uses: azure/login@v1
       with:
         creds: ${{ secrets.TEMP_CERDENTIALS  }}
+        environment: 'Dogfood'
     
     # Checkout
     - name: Checkout
