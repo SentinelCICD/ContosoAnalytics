@@ -46,7 +46,7 @@ jobs:
         ServicePrincipalId: ${{ secrets.SP_ID }}
         TenantId: ${{ secrets.TENANT_ID}}
       run: |
-        az login --service-principal -u "$env:ServicePrincipalId" -p ${{ secrets.SP_SECRET }} -tenant $env:TenantId
+        az login --service-principal -u ${{ env:ServicePrincipalId }} -p ${{ secrets.SP_SECRET }} -tenant ${{ env:TenantId }}
 
     - name: "sign in as sp"
       run:  |
