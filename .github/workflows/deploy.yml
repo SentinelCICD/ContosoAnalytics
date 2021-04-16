@@ -34,17 +34,21 @@ jobs:
     #     inlineScript: ${{ steps.deploymentScript.outputs.content }}
 
     - name: "Register Dogfood Cloud"
-      run: az cloud register --name Dogfood --endpoint-active-directory-graph-resource-id https://graph.ppe.windows.net/ --endpoint-active-directory-resource-id https://management.core.windows.net/ --endpoint-gallery https://df.gallery.azure-test.net/ --endpoint-resource-manager https://api-dogfood.resources.windows-int.net/ --endpoint-active-directory https://login.windows-ppe.net/
+      run:  |
+        az cloud register --name Dogfood --endpoint-active-directory-graph-resource-id https://graph.ppe.windows.net/ --endpoint-active-directory-resource-id https://management.core.windows.net/ --endpoint-gallery https://df.gallery.azure-test.net/ --endpoint-resource-manager https://api-dogfood.resources.windows-int.net/ --endpoint-active-directory https://login.windows-ppe.net/
 
     - name: "Set cloud"
-      run: az cloud set --name Dogfood
+      run:  |
+        az cloud set --name Dogfood
 
     - name: "sign in as sp"
-      with: # Set the secret as an input
+      env:
         ServicePrincipalId: ${{ secrets.SP_ID }}
-      run: az login --service-principal -u $ServicePrincipalId -p ${{ secrets.SP_SECRET }} -tenant ${{ secrets.TENANT_ID }}
+      run: |
+        az login --service-principal -u "$ServicePrincipalId" -p ${{ secrets.SP_SECRET }} -tenant ${{ secrets.TENANT_ID }}
 
     - name: "sign in as sp"
-      run: az account show
+      run:  |
+        az account show
       
       
