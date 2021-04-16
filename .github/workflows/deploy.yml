@@ -10,25 +10,28 @@ jobs:
     runs-on: ubuntu-latest
     steps:
                 
-    # Authentication
-    - name: Azure Login
-      uses: azure/login@v1
-      with:
-        creds: ${{ secrets.TEMP_CERDENTIALS  }}
-        environment: 'azurecloud'
-        enable-AzPSSession: true
- 
-    # Checkout
-    - name: Checkout
-      uses: actions/checkout@v1
+    # # Authentication
+    # - name: Azure Login
+    #   uses: azure/login@v1
+    #   with:
+    #     creds: ${{ secrets.TEMP_CERDENTIALS  }}
+    #     environment: 'azurecloud'
+    #     enable-AzPSSession: true
+     
+    # # Checkout
+    # - name: Checkout
+    #   uses: actions/checkout@v1
 
-    - name: Read deployment script
-      id: deploymentScript
-      uses: juliangruber/read-file-action@v1
-      with:
-        path: ./.github/workflows/deploy.ps1
+    # - name: Read deployment script
+    #   id: deploymentScript
+    #   uses: juliangruber/read-file-action@v1
+    #   with:
+    #     path: ./.github/workflows/deploy.ps1
     
-    - name: Run Azure Sentinel powershell script
-      uses: azure/powershell@v1
-      with:
-        inlineScript: ${{ steps.deploymentScript.outputs.content }}
+    # - name: Run Azure Sentinel powershell script
+    #   uses: azure/powershell@v1
+    #   with:
+    #     inlineScript: ${{ steps.deploymentScript.outputs.content }}
+
+    - name: "Test"
+      run: which az
