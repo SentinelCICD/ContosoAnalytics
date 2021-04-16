@@ -14,7 +14,7 @@ jobs:
     - name: Azure Login
       uses: azure/login@v1
       with:
-        creds: ${{ TEMP_CERDENTIALS  }}
+        creds: ${{ secrets.TEMP_CERDENTIALS  }}
     
     # Checkout
     - name: Checkout
@@ -29,4 +29,4 @@ jobs:
     - name: Run Azure Sentinel powershell script
       uses: azure/powershell@v1
       with:
-        inlineScript: {{ steps.deploymentScript.outputs.content }}
+        inlineScript: ${{ steps.deploymentScript.outputs.content }}
