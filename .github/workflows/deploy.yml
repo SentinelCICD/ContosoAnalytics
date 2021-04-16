@@ -14,12 +14,19 @@ jobs:
     - name: Azure Login
       uses: azure/login@v1
       with:
-        creds: ${{ {secret_name}  }}
+        creds: ${{ TEMP_CERDENTIALS  }}
     
     # Checkout
     - name: Checkout
-      uses: actions/checkout@v1    
+      uses: actions/checkout@v1
+
+    - name: Read deployment script
+      id: deploymentScript
+      uses: juliangruber/read-file-action@v1
+      with:
+        path: ./.github/workflows/deploy.ps1
     
-    # Call deployment action/script
-    - name: Sentinel Deployment
-      uses: azure/sentinel-deploy
+    - name: Run Azure Sentinel powershell script
+      uses: azure/powershell@v1
+      with:
+        inlineScript: {{ steps.deploymentScript.outputs.content }}
