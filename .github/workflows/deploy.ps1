@@ -2,7 +2,7 @@ Write-Output "path: $Env:path"
 Write-Output "rg name: $Env:resourceGroupName"
 Write-Output "ws name: $Env:workspaceName"
 
-$ BasePath = "${Env:path}\Detections:"
+$BasePath = "${Env:path}\Detections:"
 
 Write-Output "Starting Deployment for Files in path: $BasePath"
 
