@@ -21,7 +21,6 @@ jobs:
     #   uses: azure/login@v1
     #   with:
     #     creds: ${{ secrets.TEMP_CERDENTIALS  }}
-    #     environment: 'azurecloud'
     #     enable-AzPSSession: true
 
 #################
@@ -29,7 +28,12 @@ jobs:
 #################
     - name: "Register Dogfood Cloud"
       run:  |
-        az cloud register --name Dogfood --endpoint-active-directory-graph-resource-id https://graph.ppe.windows.net/ --endpoint-active-directory-resource-id https://management.core.windows.net/ --endpoint-gallery https://df.gallery.azure-test.net/ --endpoint-resource-manager https://api-dogfood.resources.windows-int.net/ --endpoint-active-directory https://login.windows-ppe.net/
+        az cloud register --name Dogfood \
+        --endpoint-active-directory-graph-resource-id https://graph.ppe.windows.net/ \
+        --endpoint-active-directory-resource-id https://management.core.windows.net/ \
+        --endpoint-gallery https://df.gallery.azure-test.net/ \
+        --endpoint-resource-manager https://api-dogfood.resources.windows-int.net/ \
+        --endpoint-active-directory https://login.windows-ppe.net/
 
     - name: "Set cloud"
       run:  |
