@@ -63,4 +63,5 @@ jobs:
         resourceGroupName: "newecotestrg2"
         workspaceName: "cicd-test-la"
       with:
+        azPSVersion: 'latest'
         inlineScript: ${{ steps.deploymentScript.outputs.content }}
