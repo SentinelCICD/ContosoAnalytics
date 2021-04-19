@@ -11,7 +11,7 @@ jobs:
     env:
       resourceGroupName: "newecotestrg2"
       workspaceName: "cicd-test-la"
-
+      directory: '${{ github.workspace }}/Detections'
     steps:
 #################
 ### PROD login ##
@@ -60,10 +60,9 @@ jobs:
       with:
         path: '${{ github.workspace }}/.github/workflows/deploy.ps1'
     
-    - name: Run Azure Sentinel powershell script
+    - name: Deploy Analytic Rules
       uses: azure/powershell@v1
-      env:
-        path: ${{ github.workspace }}
       with:
         azPSVersion: 'latest'
-        inlineScript: ${{ steps.deploymentScript.outputs.content }}
+        inlineScript: |
+          ${{ steps.deploymentScript.outputs.content }}
