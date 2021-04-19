@@ -19,10 +19,6 @@ jobs:
     #     creds: ${{ secrets.TEMP_CERDENTIALS  }}
     #     environment: 'azurecloud'
     #     enable-AzPSSession: true
-     
-    # # Checkout
-    # - name: Checkout
-    #   uses: actions/checkout@v1
 
 #################
 ### DF login ##
@@ -42,6 +38,15 @@ jobs:
         TENANT_ID: ${{ secrets.TENANT_ID }}
       run: |
         az login --service-principal -u ${{ env.SP_ID }} -p ${{ env.SP_SECRET }} --tenant ${{ env.TENANT_ID }}
+
+####################
+### Checkout Step ##
+####################
+
+    # Checkout
+    - name: Checkout
+      uses: actions/checkout@v1
+
 ########################
 ### Deployment Script ##
 ########################
