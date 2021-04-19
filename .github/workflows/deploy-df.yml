@@ -9,7 +9,9 @@ jobs:
   deploy-content:
     runs-on: ubuntu-latest
     steps:
-                
+#################
+### PROD login ##
+#################
     # # Authentication
     # - name: Azure Login
     #   uses: azure/login@v1
@@ -22,17 +24,9 @@ jobs:
     # - name: Checkout
     #   uses: actions/checkout@v1
 
-    # - name: Read deployment script
-    #   id: deploymentScript
-    #   uses: juliangruber/read-file-action@v1
-    #   with:
-    #     path: ./.github/workflows/deploy.ps1
-    
-    # - name: Run Azure Sentinel powershell script
-    #   uses: azure/powershell@v1
-    #   with:
-    #     inlineScript: ${{ steps.deploymentScript.outputs.content }}
-
+#################
+### DF login ##
+#################
     - name: "Register Dogfood Cloud"
       run:  |
         az cloud register --name Dogfood --endpoint-active-directory-graph-resource-id https://graph.ppe.windows.net/ --endpoint-active-directory-resource-id https://management.core.windows.net/ --endpoint-gallery https://df.gallery.azure-test.net/ --endpoint-resource-manager https://api-dogfood.resources.windows-int.net/ --endpoint-active-directory https://login.windows-ppe.net/
@@ -48,9 +42,20 @@ jobs:
         TENANT_ID: ${{ secrets.TENANT_ID }}
       run: |
         az login --service-principal -u ${{ env.SP_ID }} -p ${{ env.SP_SECRET }} --tenant ${{ env.TENANT_ID }}
-
-    - name: "sign in as sp"
-      run:  |
-        az account show
-      
-      
+########################
+### Deployment Script ##
+########################
+    - name: Read deployment script
+      id: deploymentScript
+      uses: juliangruber/read-file-action@v1
+      with:
+        path: ./.github/workflows/deploy.ps1
+    
+    - name: Run Azure Sentinel powershell script
+      uses: azure/powershell@v1
+      env:
+        path: $GITHUB_WORKSPACE
+        resourceGroupName: "newecotestrg2"
+        workspaceName: "cicd-test-la"
+      with:
+        inlineScript: ${{ steps.deploymentScript.outputs.content }}
