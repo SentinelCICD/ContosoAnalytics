@@ -45,6 +45,7 @@ jobs:
 
     # Checkout
     - name: Checkout
+      id: deploymentScript
       uses: actions/checkout@v1
 
 ########################
@@ -54,7 +55,7 @@ jobs:
       id: deploymentScript
       uses: juliangruber/read-file-action@v1
       with:
-        path: ${{ GITHUB_WORKSPACE }}/.github/workflows/deploy.ps1
+        path: '${{ env.GITHUB_WORKSPACE }}/.github/workflows/deploy.ps1'
     
     - name: Run Azure Sentinel powershell script
       uses: azure/powershell@v1
