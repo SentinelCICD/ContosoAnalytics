@@ -3,7 +3,7 @@
     "contentVersion": "1.0.0.0",
     "variables": {
         "ruleId": "017c0d3e-785f-4165-ac61-f0d47c99110a",
-        "ruleDisplayName": "MyScheduledAlertRule1"
+        "ruleDisplayName": "MyScheduledAlertRule2"
     },
     "parameters": {
         "location": {
@@ -15,7 +15,6 @@
             }
         },
         "logAnalyticsWorkspaceName": {
-            "defaultValue": "<Enter Log Analytics Workspace name>",
             "type": "string",
             "metadata": {
                 "description": "Workspace name for Log Analytics where Sentinel is setup"

@@ -15,7 +15,6 @@
             }
         },
         "logAnalyticsWorkspaceName": {
-            "defaultValue": "<Enter Log Analytics Workspace name>",
             "type": "string",
             "metadata": {
                 "description": "Workspace name for Log Analytics where Sentinel is setup"

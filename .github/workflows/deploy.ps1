@@ -2,7 +2,12 @@ Write-Output "path: $Env:path"
 Write-Output "rg name: $Env:resourceGroupName"
 Write-Output "ws name: $Env:workspaceName"
 
-Get-ChildItem "$Env:path\Detections" -Filter *.json |
+$ BasePath = "$(Env:path)\Detections:"
+
+Write-Output "Starting Deployment for Files in path: $BasePath"
+
+Get-ChildItem $BasePath -Filter *.json |
 ForEach-Object {
-    Write-Output $_.FullName
+    $FullPathToTemplateFile = $_.FullName
+    New-AzManagementGroupDeployment -ResourceGroupName $Env:resourceGroupName -TemplateFile $FullPathToTemplateFile -logAnalyticsWorkspaceName $Env:workspaceName
 }
