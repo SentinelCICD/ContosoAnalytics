@@ -49,7 +49,7 @@ jobs:
       id: deploymentScript
       uses: juliangruber/read-file-action@v1
       with:
-        path: ./.github/workflows/deploy.ps1
+        path: ${{ GITHUB_WORKSPACE }}/.github/workflows/deploy.ps1
     
     - name: Run Azure Sentinel powershell script
       uses: azure/powershell@v1
