@@ -1,6 +1,8 @@
 Write-Output "path: $Env:path"
 Write-Output "rg name: $Env:resourceGroupName"
 Write-Output "ws name: $Env:workspaceName"
+$loc = Get-Location
+Write-Output $loc
 
 $BasePath = "${Env:path}\Detections:"
 

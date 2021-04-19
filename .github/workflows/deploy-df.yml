@@ -8,6 +8,10 @@ on:
 jobs:
   deploy-content:
     runs-on: ubuntu-latest
+    env:
+      resourceGroupName: "newecotestrg2"
+      workspaceName: "cicd-test-la"
+
     steps:
 #################
 ### PROD login ##
@@ -60,8 +64,6 @@ jobs:
       uses: azure/powershell@v1
       env:
         path: ${{ github.workspace }}
-        resourceGroupName: "newecotestrg2"
-        workspaceName: "cicd-test-la"
       with:
         azPSVersion: 'latest'
         inlineScript: ${{ steps.deploymentScript.outputs.content }}
