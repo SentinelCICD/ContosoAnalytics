@@ -54,12 +54,12 @@ jobs:
       id: deploymentScript
       uses: juliangruber/read-file-action@v1
       with:
-        path: '${{ env.GITHUB_WORKSPACE }}/.github/workflows/deploy.ps1'
+        path: '${{ github.workspace }}/.github/workflows/deploy.ps1'
     
     - name: Run Azure Sentinel powershell script
       uses: azure/powershell@v1
       env:
-        path: $GITHUB_WORKSPACE
+        path: ${{ github.workspace }}
         resourceGroupName: "newecotestrg2"
         workspaceName: "cicd-test-la"
       with:
