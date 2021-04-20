@@ -1,6 +1,6 @@
 function AttemptSignIn {
     Write-Output "Attempting Sign In"
-    $RawCreds = '{"clientId: "12", "clientSecret": "34"}' # $Env:creds | ConvertFrom-Json
+    $RawCreds = $Env:creds | ConvertFrom-Json
 
     Clear-AzContext -Scope Process;
     Clear-AzContext -Scope CurrentUser -Force -ErrorAction SilentlyContinue;
