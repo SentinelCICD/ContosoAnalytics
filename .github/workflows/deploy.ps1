@@ -1,6 +1,8 @@
 Write-Output "rg name: $Env:resourceGroupName"
 Write-Output "ws name: $Env:workspaceName"
 Write-Output "creds: $Env:creds"
+$c = $Env:creds | ConvertFrom-Json
+Write-Output "clientId: " $c.clientId
 
 # Write-Output "Attempting Sign In"
 # Connect-AzAccount -ServicePrincipal -Tenant "$Env:tenantId" -Credential \
