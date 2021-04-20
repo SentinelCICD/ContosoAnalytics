@@ -12,9 +12,9 @@ jobs:
       resourceGroupName: 'newecotestrg2'
       workspaceName: 'cicd-test-la'
       directory: '${{ github.workspace }}/Detections'
-      azureCloud: 'df'
+      azureCloud: 'Dogfood'
       creds: ${{ secrets.TEMP_CERDENTIALS  }}
-      
+
     steps:
 #################
 ### PROD login ##
@@ -22,7 +22,7 @@ jobs:
     # Authentication
     - name: Azure Login
       uses: azure/login@v1
-      if: ${{ env.df == 'prod' }}
+      if: ${{ env.azureCloud == 'Prod' }}
       with:
         creds: ${{ secrets.TEMP_CERDENTIALS  }}
         enable-AzPSSession: true
