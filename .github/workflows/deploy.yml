@@ -15,7 +15,7 @@ jobs:
       cloudEnv: 'Dogfood'
       creds: ${{ secrets.TEMP_CERDENTIALS }}
 
-    # steps:
+    steps:
     # - name: Login to Azure
     #   uses: azure/login@v1
     #   with:
