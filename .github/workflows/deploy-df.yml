@@ -13,7 +13,7 @@ jobs:
       workspaceName: 'cicd-test-la'
       directory: '${{ github.workspace }}/Detections'
       azureCloud: 'Dogfood'
-      creds: ${{ secrets.TEMP_CERDENTIALS  }}
+      creds: ${{ secrets.TEMP_CERDENTIALS }}
 
     steps:
 #################
@@ -24,7 +24,7 @@ jobs:
       uses: azure/login@v1
       if: ${{ env.azureCloud == 'Prod' }}
       with:
-        creds: ${{ secrets.TEMP_CERDENTIALS  }}
+        creds: ${{ secrets.TEMP_CERDENTIALS }}
         enable-AzPSSession: true
 
 #################
