@@ -14,7 +14,7 @@ function ConnectAzCloud {
     $servicePrincipalKey = ConvertTo-SecureString $RawCreds.clientSecret.replace("'", "''") -AsPlainText -Force
     $psCredential = New-Object System.Management.Automation.PSCredential($RawCreds.clientId, $servicePrincipalKey)
 
-    Connect-AzAccount -ServicePrincipal -Tenant $RawCreds.tenantId -Credential $psCredential -Environment $Env:cloudEnv out-null;
+    Connect-AzAccount -ServicePrincipal -Tenant $RawCreds.tenantId -Credential $psCredential -Environment $Env:cloudEnv | out-null;
     Set-AzContext -SubscriptionId $RawCreds.subscriptionId -TenantId $RawCreds.tenantId | out-null;
 }
 
