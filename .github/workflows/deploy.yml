@@ -16,23 +16,15 @@ jobs:
       creds: ${{ secrets.TEMP_CERDENTIALS }}
 
     steps:
-    # - name: Login to Azure
-    #   uses: azure/login@v1
-    #   with:
-    #     creds: ${{ secrets.TEMP_CERDENTIALS }}
-    #     enable-AzPSSession: true
+    - name: Login to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.TEMP_CERDENTIALS }}
+        enable-AzPSSession: true
 
-####################
-### Checkout Step ##
-####################
-
-    # Checkout
     - name: Checkout
       uses: actions/checkout@v1
 
-########################
-### Deployment Script ##
-########################
     - name: Read deployment script
       id: deploymentScript
       uses: juliangruber/read-file-action@v1

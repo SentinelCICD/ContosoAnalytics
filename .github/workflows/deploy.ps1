@@ -1,15 +1,5 @@
-Write-Output "cloudEnv: $Env:cloudEnv";
-
-if ($Env:cloudEnv -eq "Dogfood") {
-    Write-Output "Attempting Sign In"
+function ConnectAzCloud {
     $RawCreds = $Env:creds | ConvertFrom-Json
-
-    Write-Output $RawCreds.activeDirectoryEndpointUrl;
-    Write-Output $RawCreds.resourceManagerEndpointUrl;
-    Write-Output $RawCreds.activeDirectoryGraphResourceId;
-    Write-Output $RawCreds.clientId;
-    Write-Output $RawCreds.tenantId;
-    Write-Output $RawCreds.subscriptionId;
 
     Clear-AzContext -Scope Process;
     Clear-AzContext -Scope CurrentUser -Force -ErrorAction SilentlyContinue;
@@ -19,18 +9,21 @@ if ($Env:cloudEnv -eq "Dogfood") {
         -ActiveDirectoryServiceEndpointResourceId "https://management.core.windows.net/" `
         -ActiveDirectoryEndpoint $RawCreds.activeDirectoryEndpointUrl `
         -ResourceManagerEndpoint $RawCreds.resourceManagerEndpointUrl `
-        -GraphEndpoint $RawCreds.activeDirectoryGraphResourceId; # | out-null;
+        -GraphEndpoint $RawCreds.activeDirectoryGraphResourceId | out-null;
 
     $servicePrincipalKey = ConvertTo-SecureString $RawCreds.clientSecret.replace("'", "''") -AsPlainText -Force
     $psCredential = New-Object System.Management.Automation.PSCredential($RawCreds.clientId, $servicePrincipalKey)
 
-    Connect-AzAccount -ServicePrincipal -Tenant $RawCreds.tenantId -Credential $psCredential -Environment $Env:cloudEnv; # | out-null;
-    Set-AzContext -SubscriptionId $RawCreds.subscriptionId -TenantId $RawCreds.tenantId; # | out-null;
+    Connect-AzAccount -ServicePrincipal -Tenant $RawCreds.tenantId -Credential $psCredential -Environment $Env:cloudEnv out-null;
+    Set-AzContext -SubscriptionId $RawCreds.subscriptionId -TenantId $RawCreds.tenantId | out-null;
+}
 
+if (-Not $Env:cloudEnv -eq "Prod") {
+    Write-Output "Attempting Sign In to Azure Cloud Env $Env:cloudEnv"
+    ConnectAzCloud
 }
 
 Write-Output "Starting Deployment for Files in path: $Env:directory"
-
 Get-ChildItem $Env:directory -Filter *.json |
 ForEach-Object {
     New-AzResourceGroupDeployment -ResourceGroupName $Env:resourceGroupName -TemplateFile $_.FullName -logAnalyticsWorkspaceName $Env:workspaceName
