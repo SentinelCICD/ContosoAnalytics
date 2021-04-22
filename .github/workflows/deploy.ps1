@@ -26,6 +26,8 @@ function AttemptSignIn {
     Set-AzContext -SubscriptionId $RawCreds.subscriptionId -TenantId $RawCreds.tenantId; # | out-null;
 }
 
+Write-Output $RawCreds.azureCloud;
+
 if (-NOT $Env:azureCloud -eq "Prod") {
     Write-Output "Attempting Sign In"
     AttemptSignIn
