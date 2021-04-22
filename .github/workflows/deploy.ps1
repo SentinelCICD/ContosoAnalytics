@@ -2,13 +2,13 @@ function AttemptSignIn {
     Write-Output "Attempting Sign In"
     $RawCreds = $Env:creds | ConvertFrom-Json
 
-    Write-Output "activeDirectoryEndpointUrl: ${RawCreds.activeDirectoryEndpointUrl}";
-    Write-Output "resourceManagerEndpointUrl: ${RawCreds.resourceManagerEndpointUrl}";
-    Write-Output "clientId: ${RawCreds.clientId}";
-    Write-Output "tenantId: ${RawCreds.tenantId}";
-    Write-Output "subscriptionId: ${RawCreds.subscriptionId}";
-    Write-Output "Env:azureCloud: ${RawCreds.azureCloud}";
-    Write-Output "Env:directory: ${RawCreds.activeDirectoryEndpointUrl}";
+    Write-Output ${RawCreds.activeDirectoryEndpointUrl};
+    Write-Output ${RawCreds.resourceManagerEndpointUrl};
+    Write-Output ${RawCreds.clientId};
+    Write-Output ${RawCreds.tenantId};
+    Write-Output ${RawCreds.subscriptionId};
+    Write-Output ${RawCreds.azureCloud};
+    Write-Output ${RawCreds.activeDirectoryEndpointUrl};
 
     Clear-AzContext -Scope Process;
     Clear-AzContext -Scope CurrentUser -Force -ErrorAction SilentlyContinue;
