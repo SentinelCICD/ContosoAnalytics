@@ -16,7 +16,7 @@ function AttemptSignIn {
     $psCredential = New-Object System.Management.Automation.PSCredential($RawCreds.clientId, $servicePrincipalKey)
 
     Connect-AzAccount -ServicePrincipal -Tenant $Env:tenantId -Credential $psCredential -Environment $Env:azureCloud; # | out-null;
-    Set-AzContext -SubscriptionId $RawCreds.subscriptionId -TenantId $RawCreds.tenantId; # | out-null;
+    
 }
 
 if (-NOT $Env:azureCloud -eq "Prod") {
@@ -27,5 +27,6 @@ Write-Output "Starting Deployment for Files in path: $Env:directory"
 
 Get-ChildItem $Env:directory -Filter *.json |
 ForEach-Object {
+    Set-AzContext -SubscriptionId $RawCreds.subscriptionId -TenantId $RawCreds.tenantId; # | out-null;
     New-AzResourceGroupDeployment -ResourceGroupName $Env:resourceGroupName -TemplateFile $_.FullName -logAnalyticsWorkspaceName $Env:workspaceName
 }
