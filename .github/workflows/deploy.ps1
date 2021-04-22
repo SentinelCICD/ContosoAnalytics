@@ -1,4 +1,4 @@
-Write-Output $RawCreds.azureCloud;
+Write-Output "azureCloud: $Env:azureCloud";
 
 if (-NOT $Env:azureCloud -eq "Prod") {
     Write-Output "Attempting Sign In"
@@ -6,11 +6,10 @@ if (-NOT $Env:azureCloud -eq "Prod") {
 
     Write-Output $RawCreds.activeDirectoryEndpointUrl;
     Write-Output $RawCreds.resourceManagerEndpointUrl;
+    Write-Output $RawCreds.activeDirectoryGraphResourceId;
     Write-Output $RawCreds.clientId;
     Write-Output $RawCreds.tenantId;
     Write-Output $RawCreds.subscriptionId;
-    Write-Output $RawCreds.azureCloud;
-    Write-Output $RawCreds.activeDirectoryEndpointUrl;
 
     Clear-AzContext -Scope Process;
     Clear-AzContext -Scope CurrentUser -Force -ErrorAction SilentlyContinue;
