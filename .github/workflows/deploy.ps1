@@ -1,6 +1,6 @@
-Write-Output "azureCloud: $Env:azureCloud";
+Write-Output "cloudEnv: $Env:cloudEnv";
 
-if ($Env:azureCloud -eq "Dogfood") {
+if ($Env:cloudEnv -eq "Dogfood") {
     Write-Output "Attempting Sign In"
     $RawCreds = $Env:creds | ConvertFrom-Json
 
@@ -15,7 +15,7 @@ if ($Env:azureCloud -eq "Dogfood") {
     Clear-AzContext -Scope CurrentUser -Force -ErrorAction SilentlyContinue;
     
     Add-AzEnvironment `
-        -Name "Dogfood" `
+        -Name $Env:cloudEnv `
         -ActiveDirectoryServiceEndpointResourceId "https://management.core.windows.net/" `
         -ActiveDirectoryEndpoint $RawCreds.activeDirectoryEndpointUrl `
         -ResourceManagerEndpoint $RawCreds.resourceManagerEndpointUrl `

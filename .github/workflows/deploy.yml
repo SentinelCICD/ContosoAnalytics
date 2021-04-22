@@ -12,7 +12,7 @@ jobs:
       resourceGroupName: 'newecotestrg2'
       workspaceName: 'cicd-test-la'
       directory: '${{ github.workspace }}/Detections'
-      azureCloud: 'Dogfood'
+      cloudEnv: 'Dogfood'
       creds: ${{ secrets.TEMP_CERDENTIALS }}
 
     steps:
