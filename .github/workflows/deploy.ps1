@@ -1,4 +1,7 @@
-function AttemptSignIn {
+Write-Output $RawCreds.azureCloud;
+
+if (-NOT $Env:azureCloud -eq "Prod") {
+    Write-Output "Attempting Sign In"
     $RawCreds = $Env:creds | ConvertFrom-Json
 
     Write-Output $RawCreds.activeDirectoryEndpointUrl;
@@ -24,13 +27,7 @@ function AttemptSignIn {
 
     Connect-AzAccount -ServicePrincipal -Tenant $RawCreds.tenantId -Credential $psCredential -Environment $Env:azureCloud; # | out-null;
     Set-AzContext -SubscriptionId $RawCreds.subscriptionId -TenantId $RawCreds.tenantId; # | out-null;
-}
 
-Write-Output $RawCreds.azureCloud;
-
-if (-NOT $Env:azureCloud -eq "Prod") {
-    Write-Output "Attempting Sign In"
-    AttemptSignIn
 }
 
 Write-Output "Starting Deployment for Files in path: $Env:directory"
