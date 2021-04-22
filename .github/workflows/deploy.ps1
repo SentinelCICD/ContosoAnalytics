@@ -15,9 +15,19 @@ function AttemptSignIn {
     $servicePrincipalKey = ConvertTo-SecureString $RawCreds.clientSecret.replace("'", "''") -AsPlainText -Force
     $psCredential = New-Object System.Management.Automation.PSCredential($RawCreds.clientId, $servicePrincipalKey)
 
-    Connect-AzAccount -ServicePrincipal -Tenant $Env:tenantId -Credential $psCredential -Environment $Env:azureCloud; # | out-null;
-    
+    Connect-AzAccount -ServicePrincipal -Tenant $RawCreds.tenantId -Credential $psCredential -Environment $Env:azureCloud; # | out-null;
+    Set-AzContext -SubscriptionId $RawCreds.subscriptionId -TenantId $RawCreds.tenantId; # | out-null;
 }
+
+Write-Output $RawCreds.activeDirectoryEndpointUrl;
+Write-Output $RawCreds.resourceManagerEndpointUrl;
+Write-Output $RawCreds.activeDirectoryGraphResourceId;
+Write-Output $RawCreds.clientId;
+Write-Output $RawCreds.tenantId;
+Write-Output $RawCreds.subscriptionId;
+Write-Output $Env:azureCloud;
+Write-Output $Env:directory;
+
 
 if (-NOT $Env:azureCloud -eq "Prod") {
     AttemptSignIn
@@ -27,6 +37,5 @@ Write-Output "Starting Deployment for Files in path: $Env:directory"
 
 Get-ChildItem $Env:directory -Filter *.json |
 ForEach-Object {
-    Set-AzContext -SubscriptionId $RawCreds.subscriptionId -TenantId $RawCreds.tenantId; # | out-null;
     New-AzResourceGroupDeployment -ResourceGroupName $Env:resourceGroupName -TemplateFile $_.FullName -logAnalyticsWorkspaceName $Env:workspaceName
 }
