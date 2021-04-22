@@ -1,5 +1,4 @@
 function AttemptSignIn {
-    Write-Output "Attempting Sign In"
     $RawCreds = $Env:creds | ConvertFrom-Json
 
     Write-Output ${RawCreds.activeDirectoryEndpointUrl};
@@ -28,6 +27,7 @@ function AttemptSignIn {
 }
 
 if (-NOT $Env:azureCloud -eq "Prod") {
+    Write-Output "Attempting Sign In"
     AttemptSignIn
 }
 
