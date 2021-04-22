@@ -16,40 +16,12 @@ jobs:
       creds: ${{ secrets.TEMP_CERDENTIALS }}
 
     steps:
-#################
-### PROD login ##
-#################
-    # Authentication
-    - name: Azure Login
+    - name: Login to Azure
       uses: azure/login@v1
       if: ${{ env.azureCloud == 'Prod' }}
       with:
         creds: ${{ secrets.TEMP_CERDENTIALS }}
         enable-AzPSSession: true
-
-#################
-### DF CLI login ##
-#################
-    # - name: "Register Dogfood Cloud"
-    #   run:  |
-    #     az cloud register --name Dogfood \
-    #     --endpoint-active-directory-graph-resource-id https://graph.ppe.windows.net/ \
-    #     --endpoint-active-directory-resource-id https://management.core.windows.net/ \
-    #     --endpoint-gallery https://df.gallery.azure-test.net/ \
-    #     --endpoint-resource-manager https://api-dogfood.resources.windows-int.net/ \
-    #     --endpoint-active-directory https://login.windows-ppe.net/
-
-    # - name: "Set cloud"
-    #   run:  |
-    #     az cloud set --name Dogfood
-
-    # - name: "sign in as sp"
-    #   env:
-    #     SP_ID: ${{ secrets.SP_ID }}
-    #     SP_SECRET: ${{ secrets.SP_SECRET }}
-    #     TENANT_ID: ${{ secrets.TENANT_ID }}
-    #   run: |
-    #     az login --service-principal -u ${{ env.SP_ID }} -p ${{ env.SP_SECRET }} --tenant ${{ env.TENANT_ID }}
 
 ####################
 ### Checkout Step ##

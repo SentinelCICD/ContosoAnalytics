@@ -2,6 +2,14 @@ function AttemptSignIn {
     Write-Output "Attempting Sign In"
     $RawCreds = $Env:creds | ConvertFrom-Json
 
+    Write-Output "activeDirectoryEndpointUrl: ${RawCreds.activeDirectoryEndpointUrl}";
+    Write-Output "resourceManagerEndpointUrl: ${RawCreds.resourceManagerEndpointUrl}";
+    Write-Output "clientId: ${RawCreds.clientId}";
+    Write-Output "tenantId: ${RawCreds.tenantId}";
+    Write-Output "subscriptionId: ${RawCreds.subscriptionId}";
+    Write-Output "Env:azureCloud: ${RawCreds.azureCloud}";
+    Write-Output "Env:directory: ${RawCreds.activeDirectoryEndpointUrl}";
+
     Clear-AzContext -Scope Process;
     Clear-AzContext -Scope CurrentUser -Force -ErrorAction SilentlyContinue;
     
@@ -18,16 +26,6 @@ function AttemptSignIn {
     Connect-AzAccount -ServicePrincipal -Tenant $RawCreds.tenantId -Credential $psCredential -Environment $Env:azureCloud; # | out-null;
     Set-AzContext -SubscriptionId $RawCreds.subscriptionId -TenantId $RawCreds.tenantId; # | out-null;
 }
-
-Write-Output $RawCreds.activeDirectoryEndpointUrl;
-Write-Output $RawCreds.resourceManagerEndpointUrl;
-Write-Output $RawCreds.activeDirectoryGraphResourceId;
-Write-Output $RawCreds.clientId;
-Write-Output $RawCreds.tenantId;
-Write-Output $RawCreds.subscriptionId;
-Write-Output $Env:azureCloud;
-Write-Output $Env:directory;
-
 
 if (-NOT $Env:azureCloud -eq "Prod") {
     AttemptSignIn
