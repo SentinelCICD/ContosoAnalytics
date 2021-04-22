@@ -44,5 +44,6 @@ jobs:
       uses: azure/powershell@v1
       with:
         azPSVersion: 'latest'
+        errorActionPreference: 'continue'
         inlineScript: |
           ${{ steps.deploymentScript.outputs.content }}
