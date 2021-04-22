@@ -15,12 +15,12 @@ jobs:
       cloudEnv: 'Dogfood'
       creds: ${{ secrets.TEMP_CERDENTIALS }}
 
-    steps:
-    - name: Login to Azure
-      uses: azure/login@v1
-      with:
-        creds: ${{ secrets.TEMP_CERDENTIALS }}
-        enable-AzPSSession: true
+    # steps:
+    # - name: Login to Azure
+    #   uses: azure/login@v1
+    #   with:
+    #     creds: ${{ secrets.TEMP_CERDENTIALS }}
+    #     enable-AzPSSession: true
 
 ####################
 ### Checkout Step ##
