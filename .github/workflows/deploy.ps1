@@ -17,8 +17,8 @@ function ConnectAzCloud {
     Connect-AzAccount -ServicePrincipal -Tenant $RawCreds.tenantId -Credential $psCredential -Environment $Env:cloudEnv out-null;
     Set-AzContext -SubscriptionId $RawCreds.subscriptionId -TenantId $RawCreds.tenantId | out-null;
 }
-Write-Output "Env:cloudEnv: $Env:cloudEnv"
-if (-Not $Env:cloudEnv -eq "Prod") {
+
+if ($Env:cloudEnv -ne "Prod") {
     Write-Output "Attempting Sign In to Azure Cloud Env $Env:cloudEnv"
     ConnectAzCloud
 }
