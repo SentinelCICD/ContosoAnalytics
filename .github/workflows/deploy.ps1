@@ -1,6 +1,6 @@
 Write-Output "azureCloud: $Env:azureCloud";
 
-if (-NOT $Env:azureCloud -eq "Prod") {
+if ($Env:azureCloud -eq "Dogfood") {
     Write-Output "Attempting Sign In"
     $RawCreds = $Env:creds | ConvertFrom-Json
 
