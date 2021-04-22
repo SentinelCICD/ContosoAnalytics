@@ -18,6 +18,7 @@ jobs:
     steps:
     - name: Login to Azure
       uses: azure/login@v1
+      if: ${{ env.azureCloud == 'Prod' }}
       with:
         creds: ${{ secrets.TEMP_CERDENTIALS }}
         enable-AzPSSession: true
