@@ -25,7 +25,7 @@
     "resources": [
         {
             "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
-            "name": "[concat(parameters('logAnalyticsWorkspaceName'),'/Microsoft.SecurityInsights/',parameters('ruleId'))]",
+            "name": "[concat(parameters('logAnalyticsWorkspaceName'),'/Microsoft.SecurityInsights/',variables('ruleId'))]",
             "apiVersion": "2020-01-01",
             "kind": "Scheduled",
             "location": "[parameters('location')]",
@@ -52,7 +52,7 @@
     "outputs": {
         "ruleId": {
             "type": "string",
-            "value": "[parameters('ruleId')]"
+            "value": "[variables('ruleId')]"
         }
     }
 }

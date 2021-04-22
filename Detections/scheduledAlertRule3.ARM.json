@@ -2,7 +2,7 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "variables": {
-        "ruleId": "017c0d3e-785f-4165-ac61-f0d47c99110a",
+        "ruleId": "9dd41fd6-5b1f-4228-a31d-8784a6728108",
         "ruleDisplayName": "MyScheduledAlertRule3"
     },
     "parameters": {
@@ -25,7 +25,7 @@
     "resources": [
         {
             "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
-            "name": "[concat(parameters('logAnalyticsWorkspaceName'),'/Microsoft.SecurityInsights/',parameters('ruleId'))]",
+            "name": "[concat(parameters('logAnalyticsWorkspaceName'),'/Microsoft.SecurityInsights/',variables('ruleId'))]",
             "apiVersion": "2020-01-01",
             "kind": "Scheduled",
             "location": "[parameters('location')]",
@@ -52,7 +52,7 @@
     "outputs": {
         "ruleId": {
             "type": "string",
-            "value": "[parameters('ruleId')]"
+            "value": "[variables('ruleId')]"
         }
     }
 }
