@@ -32,7 +32,7 @@
             "dependsOn": [],
             "properties": {
                 "description": "MPO rule description",
-                "displayName": "MyScheduledAlertRule",
+                "displayName": "[variables('ruleDisplayName')]",
                 "enabled": false,
                 "query": "SecurityAlert | take 10",
                 "queryFrequency": "PT1H",
