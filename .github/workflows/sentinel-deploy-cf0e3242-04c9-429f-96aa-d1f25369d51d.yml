@@ -1,0 +1,38 @@
+name: Deploy a Content to Azure Sentinel
+on: 
+  push:
+    branches: [ master ]
+
+jobs:
+  deploy-content:
+    runs-on: windows-latest
+    env:
+      resourceGroupName: 'newecotestrg2'
+      workspaceName: 'newlaworkspace1'
+      directory: '${{ github.workspace }}/Detections'
+      useDefaultCloud: 'False'
+      creds: ${{ secrets.AZURE_SENTINEL_CREDENTIALS_cf0e324204c9429f96aad1f25369d51d }}
+
+    steps:
+    - name: Login to Azure
+      uses: azure/login@v1
+      if: ${{ env.useDefaultCloud == 'True' }}
+      with:
+        creds: ${{ secrets.AZURE_SENTINEL_CREDENTIALS_cf0e324204c9429f96aad1f25369d51d }}
+        enable-AzPSSession: true
+
+    - name: Checkout
+      uses: actions/checkout@v1
+
+    - name: Read deployment script
+      id: deploymentScript
+      uses: juliangruber/read-file-action@v1
+      with:
+        path: '${{ github.workspace }}/.github/workflows/azure-sentinel-deploy.ps1'
+    
+    - name: Deploy Analytic Rules
+      uses: azure/powershell@v1
+      with:
+        azPSVersion: 'latest'
+        inlineScript: |
+          ${{ steps.deploymentScript.outputs.content }}
