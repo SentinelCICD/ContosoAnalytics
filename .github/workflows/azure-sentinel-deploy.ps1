@@ -1,18 +1,9 @@
 function ConnectAzCloud {
     $RawCreds = $Env:creds | ConvertFrom-Json
-    
+
     Clear-AzContext -Scope Process;
     Clear-AzContext -Scope CurrentUser -Force -ErrorAction SilentlyContinue;
     
-    Write-Output "ActiveDirectoryServiceEndpointResourceId: $($RawCreds.activeDirectoryServiceEndpointResourceId)";
-    Write-Output "ActiveDirectoryEndpoint: $($RawCreds.activeDirectoryEndpointUrl)";
-    Write-Output "ResourceManagerEndpoint: $($RawCreds.resourceManagerEndpointUrl)";
-    Write-Output "GraphEndpoint: $($RawCreds.graphEndpoint)";
-    Write-Output "clientId: $($RawCreds.clientId)";
-    Write-Output "tenantId: $($RawCreds.tenantId)";
-    Write-Output "subscriptionId: $($RawCreds.subscriptionId)";
-    Write-Output "Env:useDefaultCloud: $($Env:useDefaultCloud)";
-
     Add-AzEnvironment `
         -Name "CustomEnvironment" `
         -ActiveDirectoryServiceEndpointResourceId $RawCreds.activeDirectoryServiceEndpointResourceId `
