@@ -3,7 +3,7 @@
     "contentVersion": "1.0.0.0",
     "variables": {
         "ruleId": "017c0d3e-785f-4165-ac61-f0d47c99110a",
-        "ruleDisplayName": "MyScheduledAlertRule 1000"
+        "ruleDisplayName": "Failed Logins"
     },
     "parameters": {
         "location": {
