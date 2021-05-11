@@ -3,7 +3,7 @@
     "contentVersion": "1.0.0.0",
     "variables": {
         "ruleId": "9dd41fd6-5b1f-4228-a31d-8784a6728108",
-        "ruleDisplayName": "MyScheduledAlertRule3"
+        "ruleDisplayName": "Account added and removed from privileged groups"
     },
     "parameters": {
         "location": {
@@ -37,7 +37,7 @@
                 "query": "SecurityAlert | take 10",
                 "queryFrequency": "PT1H",
                 "queryPeriod": "P2DT1H30M",
-                "severity": "Medium",
+                "severity": "Low",
                 "suppressionDuration": "PT1H",
                 "suppressionEnabled": true,
                 "tactics": [ "InitialAccess", "Persistence" ],
