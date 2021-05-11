@@ -3,7 +3,7 @@
     "contentVersion": "1.0.0.0",
     "variables": {
         "ruleId": "8ee9c64a-fc2c-4410-be34-cba0e47aabf0",
-        "ruleDisplayName": "MyScheduledAlertRule4"
+        "ruleDisplayName": "Denied Connections"
     },
     "parameters": {
         "location": {
