@@ -33,7 +33,7 @@
             "properties": {
                 "description": "MPO rule description",
                 "displayName": "[variables('ruleDisplayName')]",
-                "enabled": false,
+                "enabled": true,
                 "query": "SecurityAlert | take 10",
                 "queryFrequency": "PT1H",
                 "queryPeriod": "P2DT1H30M",
