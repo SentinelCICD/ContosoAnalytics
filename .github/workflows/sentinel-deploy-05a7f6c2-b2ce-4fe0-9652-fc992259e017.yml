@@ -2,6 +2,9 @@ name: Deploy Content to Azure Sentinel
 on: 
   push:
     branches: [ master ]
+  paths:
+    - 'Detections/**'
+    - '.github/workflows/sentinel-deploy**'
 
 jobs:
   deploy-content:
