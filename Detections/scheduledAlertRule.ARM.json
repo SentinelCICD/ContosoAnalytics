@@ -37,7 +37,7 @@
                 "query": "SecurityAlert | take 10",
                 "queryFrequency": "PT1H",
                 "queryPeriod": "P2DT1H30M",
-                "severity": "High",
+                "severity": "Low",
                 "suppressionDuration": "PT1H",
                 "suppressionEnabled": true,
                 "tactics": [ "InitialAccess", "Persistence" ],
