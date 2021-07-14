@@ -14,7 +14,7 @@
                 "description": "Resource group to deploy solution resources"
             }
         },
-        "logAnalyticsWorkspaceName": {
+        "workspace": {
             "type": "string",
             "metadata": {
                 "description": "Workspace name for Log Analytics where Sentinel is setup"
