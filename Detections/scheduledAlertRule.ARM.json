@@ -3,7 +3,7 @@
     "contentVersion": "1.0.0.0",
     "variables": {
         "ruleId": "017c0d3e-785f-4165-ac61-f0d47c99110a",
-        "ruleDisplayName": "Failed Logins"
+        "ruleDisplayName": "Failed Login"
     },
     "parameters": {
         "location": {
@@ -33,7 +33,7 @@
             "properties": {
                 "description": "MPO rule description",
                 "displayName": "[variables('ruleDisplayName')]",
-                "enabled": true,
+                "enabled": false,
                 "query": "SecurityAlert | take 10",
                 "queryFrequency": "PT1H",
                 "queryPeriod": "P2DT1H30M",
