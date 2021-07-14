@@ -34,70 +34,18 @@
                 "description": "MPO rule description",
                 "displayName": "[variables('ruleDisplayName')]",
                 "enabled": true,
-                "query": "let timeRange = 1d;
-let lookBack = 7d;
-let threshold_Failed = 5;
-let threshold_FailedwithSingleIP = 20;
-let threshold_IPAddressCount = 2;
-let isGUID = "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}";
-let aadFunc = (tableName:string){
-let azPortalSignins = materialize(table(tableName)
-| where TimeGenerated >= ago(lookBack)
-// Azure Portal only
-| where AppDisplayName =~ "Azure Portal")
-;
-let successPortalSignins = azPortalSignins
-| where TimeGenerated >= ago(timeRange)
-// Azure Portal only and exclude non-failure Result Types
-| where ResultType in ("0", "50125", "50140")
-// Tagging identities not resolved to friendly names
-//| extend Unresolved = iff(Identity matches regex isGUID, true, false)
-| distinct TimeGenerated, UserPrincipalName, Id, ResultType
-;
-let failPortalSignins = azPortalSignins
-| where TimeGenerated >= ago(timeRange)
-// Azure Portal only and exclude non-failure Result Types
-| where ResultType !in ("0", "50125", "50140")
-// Tagging identities not resolved to friendly names
-| extend Unresolved = iff(Identity matches regex isGUID, true, false)
-;
-// Verify there is no success for the same connection attempt after the fail
-let failnoSuccess = failPortalSignins | join kind= leftouter (
-   successPortalSignins 
-) on UserPrincipalName, Id
-| where TimeGenerated > TimeGenerated1
-| project-away TimeGenerated1, UserPrincipalName1, Id1, ResultType1
-;
-// Lookup up resolved identities from last 7 days
-let identityLookup = azPortalSignins
-| where TimeGenerated >= ago(lookBack)
-| where not(Identity matches regex isGUID)
-| summarize by UserId, lu_UserDisplayName = UserDisplayName, lu_UserPrincipalName = UserPrincipalName;
-// Join resolved names to unresolved list from portal signins
-let unresolvedNames = failnoSuccess | where Unresolved == true | join kind= inner (
-   identityLookup 
-) on UserId
-| extend UserDisplayName = lu_UserDisplayName, UserPrincipalName = lu_UserPrincipalName
-| project-away lu_UserDisplayName, lu_UserPrincipalName;
-// Join Signins that had resolved names with list of unresolved that now have a resolved name
-let u_azPortalSignins = failnoSuccess | where Unresolved == false | union unresolvedNames;
-u_azPortalSignins
-| extend DeviceDetail = todynamic(DeviceDetail), Status = todynamic(DeviceDetail), LocationDetails = todynamic(LocationDetails)
-| extend Status = strcat(ResultType, ": ", ResultDescription), OS = tostring(DeviceDetail.operatingSystem), Browser = tostring(DeviceDetail.browser)
-| extend State = tostring(LocationDetails.state), City = tostring(LocationDetails.city), Region = tostring(LocationDetails.countryOrRegion)
-| extend FullLocation = strcat(Region,'|', State, '|', City)
-| summarize TimeGenerated = makelist(TimeGenerated), Status = makelist(Status), IPAddresses = makelist(IPAddress), IPAddressCount = dcount(IPAddress), FailedLogonCount = count()
-by UserPrincipalName, UserId, UserDisplayName, AppDisplayName, Browser, OS, FullLocation, Type
-| mvexpand TimeGenerated, IPAddresses, Status
-| extend TimeGenerated = todatetime(tostring(TimeGenerated)), IPAddress = tostring(IPAddresses), Status = tostring(Status)
-| project-away IPAddresses
-| summarize StartTime = min(TimeGenerated), EndTime = max(TimeGenerated) by UserPrincipalName, UserId, UserDisplayName, Status, FailedLogonCount, IPAddress, IPAddressCount, AppDisplayName, Browser, OS, FullLocation, Type
-| where (IPAddressCount >= threshold_IPAddressCount and FailedLogonCount >= threshold_Failed) or FailedLogonCount >= threshold_FailedwithSingleIP
-| extend timestamp = StartTime, AccountCustomEntity = UserPrincipalName, IPCustomEntity = IPAddress
-};
-let aadSignin = aadFunc("SigninLogs");
-let aadNonInt = aadFunc("AADNonInteractiveUserSignInLogs");
-union isfuzzy=true aadSignin, aadNonInt",
+                "query": "let FailureThreshold = 15;
+let FailedLogins = Okta_CL
+| where eventType_s =~ "user.session.start" and outcome_reason_s =~ "VERIFICATION_ERROR"
+| summarize count() by actor_alternateId_s, client_ipAddress_s, bin(TimeGenerated, 5m)
+| where count_ > FailureThreshold
+| project client_ipAddress_s, actor_alternateId_s;
+Okta_CL
+| join kind=inner (FailedLogins) on client_ipAddress_s, actor_alternateId_s
+| where eventType_s =~ "user.session.start" and outcome_reason_s =~ "VERIFICATION_ERROR"
+| summarize count() by actor_alternateId_s, ClientIP = client_ipAddress_s, City = client_geographicalContext_city_s, Country = client_geographicalContext_country_s, column_ifexists('published_t', now())
+| sort by column_ifexists('published_t', now()) desc
+| extend timestamp = column_ifexists('published_t', now()), IPCustomEntity = ClientIP, AccountCustomEntity = actor_alternateId_s",
                 "queryFrequency": "PT1H",
                 "queryPeriod": "P2DT1H30M",
                 "severity": "High",
