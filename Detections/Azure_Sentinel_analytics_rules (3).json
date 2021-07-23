@@ -1,0 +1,39 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workspace": {
+            "type": "String"
+        }
+    },
+    "resources": [
+        {
+            "id": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/alertRules/BuiltInFusion')]",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/BuiltInFusion')]",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+            "kind": "Fusion",
+            "apiVersion": "2021-03-01-preview",
+            "properties": {
+                "enabled": true,
+                "alertRuleTemplateName": "f71aba3d-28fb-450b-b192-4e76a83015c8"
+            }
+        },
+        {
+            "id": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/alertRules/f7610904-b6aa-43c1-843c-0f1ea29dc52d')]",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/f7610904-b6aa-43c1-843c-0f1ea29dc52d')]",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+            "kind": "MicrosoftSecurityIncidentCreation",
+            "apiVersion": "2021-03-01-preview",
+            "properties": {
+                "displayName": "Create incidents based on Office 365 Advanced Threat Protection alerts",
+                "description": "Create incidents based on all alerts generated in Office 365 Advanced Threat Protection",
+                "enabled": true,
+                "productFilter": "Office 365 Advanced Threat Protection",
+                "severitiesFilter": null,
+                "displayNamesFilter": null,
+                "displayNamesExcludeFilter": null,
+                "alertRuleTemplateName": null
+            }
+        }
+    ]
+}
