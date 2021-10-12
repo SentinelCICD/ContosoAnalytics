@@ -4,7 +4,6 @@ on:
     branches: [ master ]
     paths:
     - 'Detections/**'
-    - '.github/workflows/sentinel-deploy**'
 
 jobs:
   deploy-content:
