@@ -1,4 +1,4 @@
-name: Deploy Content to Azure Sentinel
+name: Deploy Content to Repositories Demo WS
 on: 
   push:
     branches: [ master ]
