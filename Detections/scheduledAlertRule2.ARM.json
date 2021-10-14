@@ -3,7 +3,7 @@
     "contentVersion": "1.0.0.0",
     "variables": {
         "ruleId": "4c1ea13e-064f-448c-b917-a35b019c1b9e",
-        "ruleDisplayName": "Critical Threat Detected"
+        "ruleDisplayName": "Critical Threats Detected"
     },
     "parameters": {
         "location": {
