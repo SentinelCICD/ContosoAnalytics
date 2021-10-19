@@ -4,7 +4,25 @@ $ResourceGroupName = $Env:resourceGroupName
 $WorkspaceName = $Env:workspaceName
 $Directory = $Env:directory
 $Creds = $Env:creds
-
+$contentTypes = $Env:contentTypes
+$contentTypeMapping = @{
+    "AnalyticsRule"=@("Microsoft.OperationalInsights/workspaces/providers/alertRules", "Microsoft.OperationalInsights/workspaces/providers/alertRules/actions");
+    "AutomationRule"=@("Microsoft.OperationalInsights/workspaces/providers/automationRules");
+    "HuntingQuery"=@("Microsoft.OperationalInsights/workspaces/savedSearches");
+    "Parser"=@("Microsoft.OperationalInsights/workspaces/savedSearches");
+    "Playbook"=@("Microsoft.Web/connections", "Microsoft.Logic/workflows", "Microsoft.Web/customApis");
+    "Workbook"=@("Microsoft.Insights/workbooks");
+    "Metadata"=@("Microsoft.OperationalInsights/workspaces/providers/metadata");
+}
+if (-not ($contentTypes.contains("Metadata"))) {
+    if ([string]::IsNullOrEmpty($contentTypes)) {
+        $contentTypes = "Metadata"
+    }
+     else {
+        $contentTypes += ",Metadata"
+    }
+}
+$resourceTypes = $contentTypes.Split(",") | ForEach-Object { $contentTypeMapping[$_] } | ForEach-Object { $_.ToLower() }
 $MaxRetries = 3
 $secondsBetweenAttempts = 5
 
@@ -66,7 +84,7 @@ function IsValidTemplate($path) {
 }
 
 function IsRetryable($deploymentName) {
-    $retryableStatusCodes = "Conflict","TooManyRequests","InternalServerError"
+    $retryableStatusCodes = "Conflict","TooManyRequests","InternalServerError","DeploymentActive"
     Try {
         $deploymentResult = Get-AzResourceGroupDeploymentOperation -DeploymentName $deploymentName -ResourceGroupName $ResourceGroupName -ErrorAction Stop
         return $retryableStatusCodes -contains $deploymentResult.StatusCode
@@ -76,7 +94,18 @@ function IsRetryable($deploymentName) {
     }
 }
 
+function IsValidContentType($path) {
+    $template = Get-Content $path | Out-String | ConvertFrom-Json
+    $isAllowedResources = $true
+    $template.resources | ForEach-Object { 
+        $isAllowedResources = $resourceTypes.contains($_.type.ToLower()) -and $isAllowedResources
+    }
+    return $isAllowedResources
+}
+
 function AttemptDeployment($path, $deploymentName) {
+    Write-Host "[Info] Deploying $path with deployment name $deploymentName"
+	
     $isValid = IsValidTemplate $path
     if (-not $isValid) {
         return $false
@@ -88,8 +117,7 @@ function AttemptDeployment($path, $deploymentName) {
         $currentAttempt ++
         Try 
         {
-
-            New-AzResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateFile $path -workspace $workspaceName -ErrorAction Stop | Out-Host
+            New-AzResourceGroupDeployment -Name $deploymentName -ResourceGroupName $ResourceGroupName -TemplateFile $path -workspace $workspaceName -ErrorAction Stop | Out-Host
             $isSuccess = $true
         }
         Catch [Exception] 
@@ -117,6 +145,11 @@ function AttemptDeployment($path, $deploymentName) {
     return $isSuccess
 }
 
+function GenerateDeploymentName() {
+    $randomId = [guid]::NewGuid()
+    return "Sentinel_Deployment_$randomId"
+}
+
 function main() {
     if ($CloudEnv -ne 'AzureCloud') 
     {
@@ -132,8 +165,15 @@ function main() {
         $totalFailed = 0;
         Get-ChildItem -Path $Directory -Recurse -Filter *.json |
         ForEach-Object {
+            $path = $_.FullName
             $totalFiles ++
-            $isSuccess = AttemptDeployment $_.FullName $_.Basename 
+            if (-not (IsValidContentType $path))
+            {
+                Write-Output "[Warning] Skipping deployment for $path. The file contains content that was not selected for deployment. Please add content type to connection if you want this file to be deployed."
+                return
+            }
+			$deploymentName = GenerateDeploymentName
+            $isSuccess = AttemptDeployment $_.FullName $deploymentName 
             if (-not $isSuccess) 
             {
                 $totalFailed++
