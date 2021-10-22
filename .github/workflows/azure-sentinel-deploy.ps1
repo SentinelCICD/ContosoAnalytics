@@ -14,14 +14,15 @@ $contentTypeMapping = @{
     "Workbook"=@("Microsoft.Insights/workbooks");
     "Metadata"=@("Microsoft.OperationalInsights/workspaces/providers/metadata");
 }
-if (-not ($contentTypes.contains("Metadata"))) {
-    if ([string]::IsNullOrEmpty($contentTypes)) {
-        $contentTypes = "Metadata"
-    }
-     else {
-        $contentTypes += ",Metadata"
-    }
+
+if ([string]::IsNullOrEmpty($contentTypes)) {
+    $contentTypes = "AnalyticsRule,Metadata"
 }
+
+if (-not ($contentTypes.contains("Metadata"))) {
+    $contentTypes += ",Metadata"
+}
+
 $resourceTypes = $contentTypes.Split(",") | ForEach-Object { $contentTypeMapping[$_] } | ForEach-Object { $_.ToLower() }
 $MaxRetries = 3
 $secondsBetweenAttempts = 5
