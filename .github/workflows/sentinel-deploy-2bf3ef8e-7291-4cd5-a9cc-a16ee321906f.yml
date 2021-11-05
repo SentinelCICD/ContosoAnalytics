@@ -1,4 +1,4 @@
-name: Deploy Content to Azure Sentinel
+name: Deploy Content to Contoso Workspace 1
 on: 
   push:
     branches: [ master ]
