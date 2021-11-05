@@ -1,4 +1,4 @@
-name: Deploy Content to reposmsspcustomertest [2e6692f4-4676-4a10-8301-7713ec466f3d]
+name: Deploy Content to Staging Workspace [2e6692f4-4676-4a10-8301-7713ec466f3d]
 # Note: This workflow will deploy everything in the root directory.
 # To deploy content only from a specific path (for example SentinelContent):
 #   1. Add the target path to the "paths" property like such
