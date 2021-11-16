@@ -73,9 +73,15 @@ function ConnectAzCloud {
     Set-AzContext -Tenant $RawCreds.tenantId | out-null;
 }
 
-function IsValidTemplate($path) {
+function IsValidTemplate($path, $templateObject) {
     Try {
-        Test-AzResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateFile $path -workspace $WorkspaceName
+        if (DoesContainWorkspaceParam $templateObject) {
+            Test-AzResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateFile $path -workspace $WorkspaceName
+        }
+        else {
+            Test-AzResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateFile $path
+        }
+
         return $true
     }
     Catch {
@@ -95,8 +101,7 @@ function IsRetryable($deploymentName) {
     }
 }
 
-function IsValidContentType($path) {
-    $template = Get-Content $path | Out-String | ConvertFrom-Json
+function IsValidResourceType($template) {
     $isAllowedResources = $true
     $template.resources | ForEach-Object { 
         $isAllowedResources = $resourceTypes.contains($_.type.ToLower()) -and $isAllowedResources
@@ -104,10 +109,14 @@ function IsValidContentType($path) {
     return $isAllowedResources
 }
 
-function AttemptDeployment($path, $deploymentName) {
+function DoesContainWorkspaceParam($templateObject) {
+    $templateObject.parameters.PSobject.Properties.Name -contains "workspace"
+}
+
+function AttemptDeployment($path, $deploymentName, $templateObject) {
     Write-Host "[Info] Deploying $path with deployment name $deploymentName"
-	
-    $isValid = IsValidTemplate $path
+
+    $isValid = IsValidTemplate $path $templateObject
     if (-not $isValid) {
         return $false
     }
@@ -118,27 +127,35 @@ function AttemptDeployment($path, $deploymentName) {
         $currentAttempt ++
         Try 
         {
-            New-AzResourceGroupDeployment -Name $deploymentName -ResourceGroupName $ResourceGroupName -TemplateFile $path -workspace $workspaceName -ErrorAction Stop | Out-Host
+            if (DoesContainWorkspaceParam $templateObject) 
+            {
+                New-AzResourceGroupDeployment -Name $deploymentName -ResourceGroupName $ResourceGroupName -TemplateFile $path -workspace $workspaceName -ErrorAction Stop | Out-Host
+            }
+            else 
+            {
+                New-AzResourceGroupDeployment -Name $deploymentName -ResourceGroupName $ResourceGroupName -TemplateFile $path -ErrorAction Stop | Out-Host
+            }
+            
             $isSuccess = $true
         }
         Catch [Exception] 
         {
-            $error = $_
+            $err = $_
             if (-not (IsRetryable $deploymentName)) 
             {
-                Write-Host "[Warning] Failed to deploy $path with error: $error"
+                Write-Host "[Warning] Failed to deploy $path with error: $err"
                 break
             }
             else 
             {
                 if ($currentAttempt -le $MaxRetries) 
                 {
-                    Write-Host "[Warning] Failed to deploy $path with error: $error. Retrying in $secondsBetweenAttempts seconds..."
+                    Write-Host "[Warning] Failed to deploy $path with error: $err. Retrying in $secondsBetweenAttempts seconds..."
                     Start-Sleep -Seconds $secondsBetweenAttempts
                 }
                 else
                 {
-                    Write-Host "[Warning] Failed to deploy $path after $currentAttempt attempts with error: $error"
+                    Write-Host "[Warning] Failed to deploy $path after $currentAttempt attempts with error: $err"
                 }
             }
         }
@@ -168,13 +185,14 @@ function main() {
         ForEach-Object {
             $path = $_.FullName
             $totalFiles ++
-            if (-not (IsValidContentType $path))
+            $templateObject = Get-Content $path | Out-String | ConvertFrom-Json
+            if (-not (IsValidResourceType $templateObject))
             {
-                Write-Output "[Warning] Skipping deployment for $path. The file contains content that was not selected for deployment. Please add content type to connection if you want this file to be deployed."
+                Write-Output "[Warning] Skipping deployment for $path. The file contains resources for content that was not selected for deployment. Please add content type to connection if you want this file to be deployed."
                 return
             }
 			$deploymentName = GenerateDeploymentName
-            $isSuccess = AttemptDeployment $_.FullName $deploymentName 
+            $isSuccess = AttemptDeployment $_.FullName $deploymentName $templateObject
             if (-not $isSuccess) 
             {
                 $totalFailed++
@@ -182,8 +200,8 @@ function main() {
         }
         if ($totalFiles -gt 0 -and $totalFailed -gt 0) 
         {
-            $error = "$totalFailed of $totalFiles deployments failed."
-            Throw $error
+            $err = "$totalFailed of $totalFiles deployments failed."
+            Throw $err
         }
     }
     else 
