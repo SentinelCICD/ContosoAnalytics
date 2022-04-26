@@ -34,7 +34,7 @@
                 "description": "MPO rule description",
                 "displayName": "[variables('ruleDisplayName')]",
                 "enabled": true,
-                "query": "SecurityAlert | take 15",
+                "query": "SecurityAlert | take 10",
                 "queryFrequency": "PT1H",
                 "queryPeriod": "P2DT1H30M",
                 "severity": "Low",
